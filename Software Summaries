@@ -1,0 +1,319 @@
+It's been hard to find a good review that compares viral taxonomic and protein annotation software. Using four short read shotgun metagenomic sequences from virally enriched gDNA and eight related cheese rinds from Jasper Hill, I'll be comparing published bioinformatics tools.
+I'll try to be consistent with ease, terminal use vs webpages, time used, and results usefulness in alignment with our goals.
+
+Identification and Taxonomy: ID+Tax
+Protein Annotation: prot
+i: input
+o: output
+Ease: quick thoughts of use
+Metagenomic: or needs isolates
+Time: needed to run
+Usefulness: arbitrary way to personally prioritize
+Paper and url links:
+
+PHASTER
+ID+Tax, prot
+i: fasta or NCBI genbank with accension nnumber
+o: html, sub-fastas of viral sequences, closest phage taxon
+Ease: webpage, max
+Metagenomic: accepted
+Time: less than half an hour
+Usefulness: 3/5
+Paper: https://academic.oup.com/bib/advance-article/doi/10.1093/bib/bbx121/4222653 and https://academic.oup.com/nar/article/44/W1/W16/2499364
+URL:http://phaster.ca/
+old versions: http://phast.wishartlab.com/ 
+
+This is probably the first place I would send someone with limited bioinformatics background due to how easily it is to upload and visualize results. There's even a tutorial video on the site. It's great for prophage and phage. URL api available, but I haven't used it. This tool  is excellent as a first pass to try to visualize if you have a complete phage. Generally, few people are using it, but sometimes you may be unlucky and have 50-100 submissions ahead of yours if a class just uploaded their sequences.
+
+virsorter
+ID+Tax, prot
+i: fasta
+o: main list of confident and possible phage and prophage as well as attempted circularization, protein sequences with pfam, sorted based on confidence predicted fasta and genbanks, protein clusters and pfams, best at identifying caudovirales vs not.
+Ease: terminal, easy, conda plus local, or docker
+Metagenomic: accepted
+Time: 1-3 hours
+Usefulness: 5/5 for identifying viral sequences
+Paper: https://peerj.com/articles/985/
+URL: https://github.com/simroux/VirSorter
+
+This is probably the main workhorse for determining viral metagenomic sequences in our lab. It provides much of the same information as above
+
+kraken2
+ID+Tax
+i: fasta
+o: identification and taxonomic There
+Ease: terminal, easy, conda
+Metagenomic: accepted
+Time: 1min-1hour
+Usefulness: Great for taxonomy if your phage has some relatives
+Paper: https://genomebiology.biomedcentral.com/.../gb-2014-15-3-r46
+URL: https://ccb.jhu.edu/software/kraken2/
+
+Another workhorse of the lab. Using k-mers/non-alignment based tools is essential when examining large amounts of sequencing data. Since we work with fungal, bacterial, and viral sequences, we provide an additional kraken2 database with all of these sequences added from NCBI release 95 (July 2019). It seems like kraken will be overconfident when assigning viral sequences and there are few RefSeq sequences available, so take the results of phage outputs with mountains of salt. If you are not looking at fungal sequences in your metagenome, there are pre-build kraken2 databases with refseq bacterial, archaeal, and viral, and human genomes. Kraken is also useful for 16S analysis. 
+
+VICTOR
+ID+Tax
+i: fasta
+o: text and pdf of taxonomic trees, iTOL friendly
+Ease: webpage, easy
+Metagenomic: no.
+Time: <1min
+Usefulness: great for all vs. all sequence comparison
+paper: https://academic.oup.com/bioinformatics/article/33/21/3396/3933260
+URL: https://victor.dsmz.de
+
+Nice, easy, fast way to get a taxonomic tree. Needs single fastas for each phage.
+
+
+iVIREONS
+prot
+i: fasta
+o: html, with scores for capsid and tail protein annotations.
+Ease: webpage, easy
+Metagenomic: no
+Time: less than 1 minute
+Usefulness: 2/5
+Paper: https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002657
+URL: https://vdm.sdsu.edu/ivireons/submit.html
+
+With a difficult problem to overcome, due to the limited homology in viral proteins, this group turned to neural networks to possibly find connections between MEME motifs and capsids, tail proteins. Though this provides a score, these two types of structural proteins may not provide much information, though taxonomic analysis based on these results may be more appropriate/computationally efficient than a total viral genome comparison.
+
+
+Todo: VirMine, VAPiD, Vgas, VIRULIGN, Host Phinder, viral rast. 
+Clustering for taxonomy. 
+(Ondov et al. 2016) MASH
+Genomes based taxonomy (BLAST based) (Rohwer and Edwards 2002)
+BLAST based with 1/similarity distance (Dougan and Quake 2018)
+
+
+ViromeScan
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+Not useful for us, as they filter out phage, and code is not accessible to edit.
+
+CGView
+i: fasta and up to 3 comparison genomes
+o: alignment and visual comparison of many genomes
+Ease: webpage, easy, takes many filetypes
+Metagenomic: yes
+Time: 
+Usefulness: /5
+Paper: https://academic.oup.com/nar/article/36/suppl_2/W181/2505750
+URL: http://stothard.afns.ualberta.ca/cgview_server/
+
+
+FastViromeExplorer
+i: fasta
+o: 
+Ease: easy, java
+Metagenomic: yes
+Time: 5 minutes, depending on number of reads and reference size
+Usefulness: ?/5
+Paper: https://peerj.com/articles/4227/
+URL: https://code.vt.edu/saima5/FastViromeExplorer , https://fastviromeexplorer.readthedocs.io/en/latest/
+
+Compares short reads against reference database (NCBI 8,957 genomes, JG IMG/VR metagenomic viral contigs, or any other set) and filtered for taxonomic comparison. Nicely detects and quantifies the amount of previously sequenced virus.
+
+VHost-Classifier
+i: virus names
+o: list of possible hosts
+Ease: easy. Need python and one toolkit.
+Metagenomic: yes
+Time: ?
+Usefulness: 1/5
+Paper: https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btz151/5368011
+URL: https://github.com/Kzra/VHost-Classifier
+
+Can give an idea about the host of virus based on its name. It's more robust against different naming conventions due to some language processing. First does a BLAST against Virus-Host DB, to ID the phage reads, then groups the viral taxons together and attempts to find host from database, if available, or by sequence characteristics. Not exceptionally useful for our metagenomic or isolated phage without any relatives, but nicely combines NCBI, Virus-Host DB, and IMG/VR to try to find some connection between the virus and host/environment. Would be useful when more phage are available in any of these databases.
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
+
+
+
+i: 
+o: 
+Ease: 
+Metagenomic: 
+Time: 
+Usefulness: /5
+Paper: 
+URL:
